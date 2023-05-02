@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongodb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Auth {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  username String   @unique
+  password String?
+  role     String?
+  student  Student?
+}
+
+model Student {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  sub_id     Int?
+  name       String? @unique
+  first_name String?
+  last_name  String?
+  email      String
+  image_url  String?
+  score      Float?
+  level      String?
+  tel        String
+  history    Json?
+  auth       Auth    @relation(fields: [authId], references: [id])
+  authId     String  @unique @db.ObjectId
+}
+
+model Examination {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  question_level Int    @unique
+  sub_id         Int    @unique
+  question       String
+  choice         Json
+  answer         String
+  level          String @unique
+}
+
+model Image_url {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  image_url String
+  type      String
+}
